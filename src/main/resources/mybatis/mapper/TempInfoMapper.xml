@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="top.migod.mapper.TempInfoMapper">
+    <select id="selectByCode" resultType="TempInfo">
+        select * from qna_database.temp_info where check_code = #{check_code}
+    </select>
+
+    <select id="selectByUsername" resultType="TempInfo">
+        select * from qna_database.temp_info where username = #{username}
+    </select>
+
+    <select id="selectByUid" resultType="TempInfo">
+        select * from qna_database.temp_info where uid = #{uid}
+    </select>
+
+    <insert id="insert" parameterType="TempInfo">
+        insert into qna_database.temp_info(check_code,`type`,uid,username,password,email,nickname) values (#{check_code},#{type},#{uid},#{username},#{password},#{email},#{nickname})
+    </insert>
+
+    <update id="update" parameterType="TempInfo">
+        update qna_database.temp_info set `type`=#{type},uid=#{uid},username=#{username},password=#{password},email=#{email},nickname=#{nickname} where check_code=#{check_code}
+    </update>
+
+    <delete id="delete" parameterType="TempInfo">
+        delete from qna_database.temp_info where check_code=#{check_code}
+    </delete>
+
+</mapper>

@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="shortcut icon" th:href="@{/favicon1.ico}"/>
+    <link rel="bookmark" th:href="@{/favicon1.ico}"/>
+
+    <title>个人中心 - QnA</title>
+
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css"
+          integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+
+
+    <style>
+        .bd-placeholder-img {
+            font-size: 1.125rem;
+            text-anchor: middle;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        @media (min-width: 768px) {
+            .bd-placeholder-img-lg {
+                font-size: 3.5rem;
+            }
+        }
+    </style>
+    <!-- Custom styles for this template -->
+    <link th:href="@{/css/signup.css}" rel="stylesheet">
+</head>
+
+<body class="bg-light">
+<!-- Modal -->
+<div class="modal fade" id="profilePicModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">上传头像</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="/user/set_profile_picture" enctype="multipart/form-data" method="post">
+                <div class="modal-body">
+                    <input id="profile_picture_input" name="profile_picture" type="file" accept="image/jpg"><br><br>
+                    <p class="text-muted">请上传1MB以内的图片，仅支持jpg格式。</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                    <button id="profile_pic_submit_btn" type="submit" class="btn btn-primary" disabled>确认上传</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="pt-5 pb-1 text-center">
+        <img style="cursor:pointer;" class="mb-2 rounded-circle" th:src="${session.current_user.avatar_name} ? ${session.current_user.avatar_name} : @{/imgs/site/logo.png}" alt=""
+                        width="150" height="150" data-toggle="modal" data-target="#profilePicModal">
+        <div class="text-muted mb-4">点击可以修改头像</div>
+        <h2>个人资料</h2>
+    </div>
+
+    <hr class="mb-5">
+
+    <div class="row">
+        <div class="col-md-8 offset-md-2 order-md-1">
+            <div th:if="${not #strings.isEmpty(msg_info)}" th:text="${msg_info}" class="alert alert-primary text-center"
+                 role="alert"></div>
+            <div th:if="${not #strings.isEmpty(msg)}" th:text="${msg}" class="alert alert-danger text-center"
+                 role="alert"></div>
+            <div class="mb-3">
+                <label>用户名</label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span th:text="'@'+${session.current_user.username}" class="input-group-text">@userxxx</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label>我的QnA问答版地址</label>
+                <div class="input-group-text text-center">
+                    <a th:href="@{'/u/'+${session.current_user.username}}"
+                       th:text="'qna.migod.top/u/'+${session.current_user.username}">qna.migod.top/userxxx</a>
+                </div>
+            </div>
+            <form th:action="@{/user/setting_submit}" class="form-user-basic" method="post">
+                <div class="mb-3">
+                    <label for="nickname">昵称</label>
+                    <input name="nickname" type="text" class="form-control" id="nickname"
+                           th:value="${session.current_user.nickname}">
+                    <div class="invalid-feedback">
+                        请填写有效的邮箱地址
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="email">电子邮箱地址 <span class="text-muted">(QnA通过Email为您进行消息提醒)</span></label>
+                    <input name="email" type="email" class="form-control" id="email" th:value="${session.current_user.email}">
+                    <div class="invalid-feedback">
+                        请填写有效的邮箱地址
+                    </div>
+                </div>
+
+
+                <div class="mb-3">
+                    <label>个人简介 <span class="text-muted text-sm">(个人简介会显示在您的提问版主页)</span></label>
+                    <div class="input-group">
+                        <textarea name="self_intro" th:text="${session.current_user.self_intro}"
+                                  class="form-control"></textarea>
+                    </div>
+                </div>
+                <button class="btn btn-primary btn-lg btn-block" type="submit">保存资料</button>
+            </form>
+        </div>
+    </div>
+
+    <hr class="my-5">
+
+    <div class="row">
+        <div class="col-md-8 offset-md-2 order-md-1">
+            <form th:action="@{/user/password_reset_submit}" class="form-user-password" method="post">
+                <div class="mb-3">
+                    <label for="password">旧密码</label>
+                    <input name="password" type="password" class="form-control" id="password">
+                    <div class="invalid-feedback">
+                        密码强度过低
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="new_password">新密码</label>
+                    <input name="new_password" type="password" class="form-control" id="new_password">
+                    <div class="invalid-feedback">
+                        请输入8-32位，同时含有大小写英文和数字的密码
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="new_password_confirm">确认新密码</label>
+                    <input name="new_password_confirm" type="password" class="form-control" id="new_password_confirm">
+                    <div class="invalid-feedback">
+                        两次密码输入不一致
+                    </div>
+                </div>
+
+                <button id="reset_password_submit" class="btn btn-secondary btn-lg btn-block" type="submit">修改密码</button>
+            </form>
+        </div>
+    </div>
+
+    <footer class="my-5 pt-5 text-muted text-center text-small">
+        <p class="mb-1">&copy; 2017-2020 Company Name</p>
+    </footer>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.min.js"
+        integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
+        crossorigin="anonymous"></script>
+<script type="text/javascript" th:src="@{/js/user_setting.js}"></script>
+</body>
+
+</html>

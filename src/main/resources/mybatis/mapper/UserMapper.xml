@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="top.migod.mapper.UserMapper">
+    <select id="selectById" resultType="User">
+        select * from qna_database.user where uid = #{uid}
+    </select>
+
+    <select id="selectByUsername" resultType="User">
+        select * from qna_database.user where username = #{username}
+    </select>
+
+    <select id="selectAll" resultType="User">
+        select * from qna_database.user
+    </select>
+
+    <insert id="insert" parameterType="User"
+        useGeneratedKeys="true" keyProperty="uid">
+        insert into qna_database.user(username,password,email,nickname,self_intro,avatar_name) values (#{username},#{password},#{email},#{nickname},#{self_intro},#{avatar_name})
+    </insert>
+
+    <update id="update" parameterType="User">
+        update qna_database.user set password=#{password},nickname=#{nickname},self_intro=#{self_intro},avatar_name=#{avatar_name} where uid=#{uid}
+    </update>
+
+    <delete id="delete" parameterType="User">
+        delete from qna_database.user where uid=#{uid}
+    </delete>
+
+</mapper>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="top.migod.mapper.QuestionMapper">
+    <select id="selectById" resultType="Question">
+        select * from qna_database.question where qid = #{qid}
+    </select>
+
+    <select id="selectByUid" resultType="Question">
+        select * from qna_database.question where uid = #{uid} order by `time` desc
+    </select>
+
+    <select id="selectByUidLimitOffset" resultType="Question">
+        select * from question where uid = #{uid} order by `time` desc limit #{limit} offset #{offset}
+    </select>
+
+    <select id="selectAll" resultType="Question">
+        select * from question
+    </select>
+
+    <select id="getNumByUid" resultType="int">
+        select count(*) from question where uid = #{uid}
+    </select>
+
+
+    <insert id="insert" parameterType="Question"
+            useGeneratedKeys="true" keyProperty="qid">
+        insert into question(uid,content,`time`) values (#{uid},#{content},#{time})
+    </insert>
+
+    <update id="update" parameterType="Question">
+        update question set uid=#{uid},content=#{content},`time`=#{time} where qid=#{qid}
+    </update>
+
+    <delete id="delete" parameterType="Question">
+        delete from question where qid=#{qid}
+    </delete>
+
+</mapper>

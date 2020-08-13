@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title th:text="${view_user.username}+'的问答版 - QnA'">问答版 - QnA</title>
+
+    <link rel="shortcut icon" th:href="@{/favicon1.ico}"/>
+    <link rel="bookmark" th:href="@{/favicon1.ico}"/>
+
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css"
+          integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+
+    <style>
+        .bd-placeholder-img {
+            font-size: 1.125rem;
+            text-anchor: middle;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        @media (min-width: 768px) {
+            .bd-placeholder-img-lg {
+                font-size: 3.5rem;
+            }
+        }
+    </style>
+    <!-- Custom styles for this template -->
+    <link th:href="@{/css/panel.css}" href="panel.css" rel="stylesheet">
+</head>
+
+<body>
+<header>
+    <div class="collapse bg-dark" id="navbarHeader">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-8 col-md-7 py-4">
+                    <h4 class="text-white">关于QnA问答版</h4>
+                    <p class="text-muted">
+                        QnA问答版是一个人人都能提问，既可以匿名也可以实名的，无约束且同时支持PC和移动端的个人问答网站。你可以自由地把你的问答版分享到微信、微博等任何地方，让你的好友们给你尽情提问吧！</p>
+                </div>
+                <div class="col-sm-4 offset-md-1 py-4">
+                    <h4 class="text-white">用户</h4>
+                    <ul class="list-unstyled">
+                        <li><a th:href="@{/login.html}" th:if="${#strings.isEmpty(session.current_user)}"
+                               class="text-white">用户登录</a></li>
+                        <li><a th:href="@{/signup.html}" th:if="${#strings.isEmpty(session.current_user)}"
+                               class="text-white">注册QnA</a></li>
+                        <li><a th:href="@{/user/setting.html}" th:if="${not #strings.isEmpty(session.current_user)}"
+                               class="text-white">个人资料</a></li>
+                        <hr style="background-color: #DCDCDC;">
+                        <li><a href="http://migod.top/message" class="text-white">联系开发者</a></li>
+                        <li><a th:href="@{/logout}" th:if="${not #strings.isEmpty(session.current_user)}"
+                               class="text-danger">退出登录</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="navbar navbar-dark bg-dark shadow-sm">
+        <div class="container d-flex justify-content-between">
+            <a href="#" class="navbar-brand d-flex align-items-center">
+                <img class="mr-2" th:src="@{/imgs/site/logo.png}" src="static/imgs/logo.svg" alt="" width="40"
+                     height="40">
+                <strong>QnA问答版</strong>
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarHeader"
+                    aria-controls="navbarHeader" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+    </div>
+</header>
+
+<main role="main">
+
+    <section class="jumbotron py-5 text-center">
+        <div class="container">
+            <img class="mb-4 rounded-circle"
+                 th:src="${view_user.avatar_name} ? @{${view_user.avatar_name}} : @{/imgs/site/logo.png}"
+                 src="static/imgs/logo.svg" alt="" width="120" height="120">
+            <h1 th:text="${view_user.nickname}+' 的问答版'">XXX 的问答版</h1>
+            <p th:text="${view_user.self_intro}" class="lead text-muted">这是个人介绍~</p>
+            <p>
+                <a href="#collapseForm" class="btn btn-dark my-2" data-toggle="collapse">发布新提问</a>
+                <a th:href="${session.current_user} ? @{/} : @{/signup.html}" class="btn btn-secondary my-2">我的问答版</a>
+            </p>
+        </div>
+        <div class="collapse container px-0" id="collapseForm">
+            <div class="col-md-8 offset-md-2 py-2 border rounded-lg bg-light">
+                <form th:action="@{/new_question}" method="post">
+                    <input type="hidden" th:value="${view_user.uid}" name="uid">
+                    <textarea id="question" name="content" class="form-control" rows="6" required></textarea>
+                    <div id="word_num" class="text-right text-muted" required>字数：0/500</div>
+                    <div class="offset-md-9 col-md-3 px-0">
+                        <button id="questionBtn" type="submit" class="btn btn-block btn-outline-dark">发送！</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <div class="album py-5 bg-light">
+        <div class="container">
+
+            <div class="row" th:if="questions">
+
+                <div class="col-md-4" th:each="q:${questions}">
+                    <div class="card mb-4 shadow-sm">
+                        <div class="card-body">
+                            <p th:text="${#strings.length(q.content)>140}?${#strings.abbreviate(q.content,140)+' ...'}:${q.content}"
+                               class="card-text">This is a wider card with supporting text below as a natural lead-in to
+                                additional
+                                content. This content is a little bit longer.</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <small th:text="${#calendars.format(q.time,'yyyy-MM-dd E hh:mm')}" class="text-muted">9
+                                    mins</small>
+                                <div class="btn-group">
+                                    <a th:href="@{'/q/'+${q.qid}+'.html'}"
+                                       class="btn btn-sm btn-outline-secondary">查看详细</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</main>
+
+<nav aria-label="Page navigation">
+    <ul class="pagination justify-content-center">
+        <li th:class="${page==1}?'page-item disabled':'page'">
+            <a class="page-link" th:href="@{'/u/'+${view_user.username}+'.html?p='+${page-1}}">
+                <span aria-hidden="true">&laquo;</span>
+                <span class="sr-only">Previous</span>
+            </a>
+        </li>
+
+        <li th:each="current_page:${#numbers.sequence(1,page_num)}"
+            th:class=" ${current_page==page}?'page-item active':'item'" class="page-item">
+            <a th:text="${current_page}" class="page-link"
+               th:href="@{'/u/'+${view_user.username}+'.html?p='+${current_page}}">2</a>
+        </li>
+
+        <li th:class="${page==page_num}?'page-item disabled':'page'">
+            <a class="page-link" th:href="@{'/u/'+${view_user.username}+'.html?p='+${page+1}}">
+                <span aria-hidden="true">&raquo;</span>
+                <span class="sr-only">Next</span>
+            </a>
+        </li>
+    </ul>
+</nav>
+
+<footer class="text-muted">
+    <div class="container">
+        <p class="float-right">
+            <a href="#">返回顶部</a>
+        </p>
+        <p>&copy; QnA 2020-2021</p>
+    </div>
+</footer>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.min.js"
+        integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
+        crossorigin="anonymous"></script>
+
+<script type="text/javascript" th:src="@{/js/panel.js}"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title th:text="${view_user.username}+'收到的提问 - QnA'">问答版 - QnA</title>
+
+    <link rel="shortcut icon" th:href="@{/favicon1.ico}"/>
+    <link rel="bookmark" th:href="@{/favicon1.ico}"/>
+
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css"
+          integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+
+    <style>
+        .bd-placeholder-img {
+            font-size: 1.125rem;
+            text-anchor: middle;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        @media (min-width: 768px) {
+            .bd-placeholder-img-lg {
+                font-size: 3.5rem;
+            }
+        }
+    </style>
+    <!-- Custom styles for this template -->
+    <link th:href="@{/css/panel.css}" rel="stylesheet">
+    <link th:href="@{/css/question.css}" rel="stylesheet">
+</head>
+
+<body>
+<header>
+    <div class="collapse bg-dark" id="navbarHeader">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-8 col-md-7 py-4">
+                    <h4 class="text-white">关于QnA问答版</h4>
+                    <p class="text-muted">
+                        QnA问答版是一个人人都能提问，既可以匿名也可以实名的，无约束且同时支持PC和移动端的个人问答网站。你可以自由地把你的问答版分享到微信、微博等任何地方，让你的好友们给你尽情提问吧！</p>
+                </div>
+                <div class="col-sm-4 offset-md-1 py-4">
+                    <h4 class="text-white">用户</h4>
+                    <ul class="list-unstyled">
+                        <li><a th:href="@{/login.html}" th:if="${#strings.isEmpty(session.current_user)}"
+                               class="text-white">用户登录</a></li>
+                        <li><a th:href="@{/signup.html}" th:if="${#strings.isEmpty(session.current_user)}"
+                               class="text-white">注册QnA</a></li>
+                        <li><a th:href="@{/user/setting.html}" th:if="${not #strings.isEmpty(session.current_user)}"
+                               class="text-white">个人资料</a></li>
+                        <hr style="background-color: #DCDCDC;">
+                        <li><a href="http://migod.top/message" class="text-white">联系开发者</a></li>
+                        <li><a th:href="@{/logout}" th:if="${not #strings.isEmpty(session.current_user)}" class="text-danger">退出登录</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="navbar navbar-dark bg-dark shadow-sm">
+        <div class="container d-flex justify-content-between">
+            <a class="navbar-toggler" th:href="@{'/u/'+${view_user.username}+'.html'}">
+                <svg class="bi bi-arrow-left" width="30" height="30" viewBox="0 0 16 16" fill="currentColor"
+                     xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd"
+                          d="M5.854 4.646a.5.5 0 0 1 0 .708L3.207 8l2.647 2.646a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 0 1 .708 0z"/>
+                    <path fill-rule="evenodd" d="M2.5 8a.5.5 0 0 1 .5-.5h10.5a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
+                </svg>
+            </a>
+            <a href="#" class="navbar-brand d-flex align-items-center">
+                <img class="mr-2" th:src="@{/imgs/site/logo.png}" alt="" width="40" height="40">
+                <strong>QnA问答版</strong>
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarHeader"
+                    aria-controls="navbarHeader" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+    </div>
+</header>
+
+<main role="main">
+    <div class="album py-5 bg-light">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8 offset-md-2">
+                    <div class="card mb-4 shadow">
+                        <div class="card-body">
+                            <p class="lead">Q</p>
+                            <p th:text="${question.content}" class="card-text">Lorem ipsum dolor sit amet consectetur
+                                adipisicing elit. Iusto
+                                facilis voluptas sint sit qui illum eveniet, quam incidunt nulla itaque odio esse
+                                fugit doloremque perferendis cum at quis quos tempore?Lorem ipsum dolor sit amet
+                                consectetur adipisicing elit. Earum, animi ipsam quos, similique est cupiditate
+                                magni, molestiae omnis ad adipisci quaerat tempore tempora officia vel. Voluptatem
+                                et sequi corporis doloribus?</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <small th:text="${#calendars.format(question.time,'yyyy-MM-dd E hh:mm')}"
+                                       class="text-muted">9 mins</small>
+                                <small th:unless="${session.current_user!=null and session.current_user.uid==view_user.uid and answer==null}" th:text="${answer}==null?'未回答':'已回答'" class="text-muted">已回复</small>
+                                <div class="btn-group"
+                                     th:if="${session.current_user!=null and session.current_user.uid==view_user.uid and answer==null}">
+                                    <button type="button" class="btn btn-sm btn-outline-secondary"
+                                            data-toggle="collapse" data-target="#collapseForm">回复
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="collapse container px-0" id="collapseForm">
+                                <div class="mt-2 py-2 border rounded-lg bg-light">
+                                    <form th:action="@{/new_answer}" method="post">
+                                        <input type="hidden" th:value="${question.qid}" name="qid">
+                                        <div class="px-1"><textarea id="answerText" name="content" class="form-control"
+                                                                    rows="8" required></textarea></div>
+                                        <div id="word_num" class="text-right text-muted">字数：0/800</div>
+                                        <div class="offset-md-9 col-md-3 px-0">
+                                            <button id="answerBtn" type="submit" class="answerBtn btn btn-block btn-outline-dark">
+                                                发送！
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-8 offset-md-2" th:if="${answer}">
+                    <div class="card mb-4 shadow">
+                        <div class="card-body">
+                            <p class="lead">A</p>
+                            <p th:text="${answer.content}" class="card-text">Lorem ipsum dolor sit amet consectetur
+                                adipisicing elit. Iusto
+                                facilis voluptas sint sit qui illum eveniet, quam incidunt nulla itaque odio esse
+                                fugit doloremque perferendis cum at quis quos tempore?Lorem ipsum dolor sit amet
+                                consectetur adipisicing elit. Earum, animi ipsam quos, similique est cupiditate
+                                magni, molestiae omnis ad adipisci quaerat tempore tempora officia vel. Voluptatem
+                                et sequi corporis doloribus?</p>
+                            <div class="d-flex justify-content-between align-items-right">
+                                <small th:text="${#calendars.format(answer.time,'yyyy-MM-dd E hh:mm')}"
+                                       class="text-muted">9 mins</small>
+                                <div class="btn-group" th:if="${session.current_user!=null and session.current_user.uid==view_user.uid}">
+                                    <button type="button" class="btn btn-sm btn-outline-danger" data-toggle="modal"
+                                            data-target="#deleteModal">
+                                        删除
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary"
+                                            data-toggle="collapse" data-target="#collapseForm2">修改
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="collapse container px-0" id="collapseForm2">
+                                <div class="mt-2 py-2 border rounded-lg bg-light">
+                                    <form th:action="@{/reset_answer}" method="post">
+                                        <input type="hidden" th:value="${answer.aid}" name="aid">
+                                        <div class="px-1"><textarea th:value="${answer.content}" id="answerText2" name="content" class="form-control"
+                                                                    rows="8" required></textarea></div>
+                                        <div id="word_num2" class="text-right text-muted">字数：0/800</div>
+                                        <div class="offset-md-9 col-md-3 px-0">
+                                            <button id="answerBtn2" type="submit" class="answerBtn btn btn-block btn-outline-dark">
+                                                发送！
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</main>
+
+<footer class="text-muted">
+    <div class="container">
+        <p class="float-right">
+            <a href="#">返回顶部</a>
+        </p>
+        <p>&copy; QnA 2020-2021</p>
+    </div>
+</footer>
+
+<!-- Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+     aria-hidden="true" th:if="${answer}">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">删除提醒</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                删除后不可恢复，确认要删除吗？
+            </div>
+            <div class="modal-footer">
+                <form th:action="@{/delete_answer}" method="post">
+                    <input type="hidden" th:value="${answer.aid}" name="aid">
+                    <button type="submit" class="btn btn-danger">确认</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.min.js"
+        integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
+        crossorigin="anonymous"></script>
+
+<script type="text/javascript" th:src="@{/js/question.js}"></script>
+</body>
+
+</html>

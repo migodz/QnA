@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="top.migod.mapper.AnswerMapper">
+    <select id="selectById" resultType="Answer">
+        select * from qna_database.answer where aid = #{aid}
+    </select>
+
+    <select id="selectByQid" resultType="Answer">
+        select * from qna_database.answer where qid = #{qid}
+    </select>
+
+    <select id="selectAll" resultType="Answer">
+        select * from qna_database.answer
+    </select>
+
+    <insert id="insert" parameterType="Answer"
+            useGeneratedKeys="true" keyProperty="aid">
+        insert into qna_database.answer(uid, qid, content,`time`) values (#{uid},#{qid},#{content},#{time})
+    </insert>
+
+    <update id="update" parameterType="Answer">
+        update qna_database.answer set uid=#{uid},qid=#{qid},content=#{content},`time`=#{time} where aid=#{aid}
+    </update>
+
+    <delete id="delete" parameterType="Answer">
+        delete from qna_database.answer where aid=#{aid}
+    </delete>
+
+</mapper>
